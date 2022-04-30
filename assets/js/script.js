@@ -4,6 +4,7 @@ var startEl = document.querySelector("#start-container")
 var startBtnEl = document.querySelector("#start-btn")
 var timerEl = document.querySelector("#timer")
 var footerEl = document.querySelector("footer")
+var formEl = document.createElement("form")
 
 // array of all question elements
 var questions = [{
@@ -47,8 +48,9 @@ var questions = [{
     ans: "4"
 }];
 
-var timeLeft = 75
-var currentQuestion = 0
+var timeLeft = 75;
+var finalScore = 0;
+var currentQuestion = 0;
 
 // Click start buttton to begin quiz
 // STARTQUIZ -- Timer starts ticking down and page populates with first question
@@ -62,25 +64,32 @@ var currentQuestion = 0
 
 // Timer function -- Displays and decrements timer. Ends quiz if reaches 0
 var countdownTimer = function() {
-    var timeInterval = setInterval(function (){
-
-        if (timeLeft >= 0) {
-            timeLeft--;
-            timerEl.textContent = "Time Remaining: " + timeLeft;
-            if (timeLeft <= 10) {
-                timerEl.className = "text-danger";
-            }
+    if (timeLeft > 0) {
+        timeLeft--;
+        timerEl.textContent = "Time Remaining: " + timeLeft;
+        if (timeLeft <= 10) {
+            timerEl.className = "text-danger";
         }
-
-        else {
-            clearInterval(timeInterval);
-            endQuiz(false);
-        }
-    }, 1000);
+    }
+    else {
+        stopTimer();
+        return endQuiz(false);
+    }
 };
+
+var t;
+
+var startTimer = function() {
+    t = setInterval(countdownTimer, 1000);
+}
+
+var stopTimer = function() {
+    clearInterval(t);
+}
 
 // Displays questions and ends game when out of questions
 var getQuestion = function(num) {
+    if (num < 5) {
     quizEl.innerHTML = "";
 
     var questionEl = document.createElement("div");
@@ -119,14 +128,18 @@ var getQuestion = function(num) {
 
         console.log("populated question ", num+1);
         currentQuestion++;
+    }
+    else {
+        return endQuiz(timeLeft);
+    }
 }
 
 // quiz button handler
 var quizButtonHandler = function(event) {
-    var questionAnswer = event.target;
+    var targetEl = event.target;
 
-    if (questionAnswer.matches(".answer-choice-btn")) {
-        var chosenAnswer = questionAnswer.getAttribute("option");
+    if (targetEl.matches(".answer-choice-btn")) {
+        var chosenAnswer = targetEl.getAttribute("option");
         
         console.log("Clicked a button with option", chosenAnswer);
 
@@ -140,49 +153,66 @@ var answerChecker = function(answer) {
 
     if (answer === correctAnswer) {
         console.log("correct!");
-
+        footerEl.textContent = "Correct!";
+        footerEl.className = "border-top";
     }
     else {
         console.log("wrong");
         timeLeft -= 10;
         timerEl.textContent = "Time Remaining: " + timeLeft;
+        footerEl.textContent = "Wrong!";
     }
     return getQuestion(currentQuestion);
 }
 
 // Ends Quiz and displays score
-var endQuiz = function(finalScore) {
+var endQuiz = function(num) {
     var endScreenEl = document.createElement("div");
     endScreenEl.className = "end-screen";
+    stopTimer();
 
-    var submitScore = function() {
-        return saveScore(playerName, finalScore);
-    }
 
-    if (!finalScore) {
+    if (!num) {
         endScreenEl.innerHTML = "<h1>You ran out of time. Refresh the page to try again.</h1>";
         quizEl.appendChild(endScreenEl);
-        console.log("you lost");
     }
+
     else {
-    endScreenEl.innerHTML = "<div><h1>All Done!</h1><p>Your final score is" + finalScore + "</p><p>Enter initials: <input type='text' name='player-name' placeholder='Initials' /><button class='btn btn-outline-dark text-light btn-success' id='submit-player-name' type='submit'>Add Task</button></p></div>";
-    quizEl.appendChild(endScreenEl);
-    var submitEl = document.querySelector("#submit-player-name")
-    var playerName = document.querySelector("input[name='player-name']").value;
-    submitEl.addEventListener("submit", submitScore(playerName, finalScore));
+    finalScore += num;
+    quizEl.innerHTML = "";
+    endScreenEl.innerHTML = "<div><h1>All Done!</h1><p>Your final score is: " + num + "</p><p>Enter initials: <input type='text' name='player-name' placeholder='Initials' /><button class='btn btn-outline-dark text-light btn-success name-submit' id='submit-player-name' type='submit'>Submit</button></p></div>";
+    formEl.appendChild(endScreenEl);
+    quizEl.appendChild(formEl);
+    setInterval
     }
 }
 
+// handles score form
+var scoreFormHandler = function(event) {
+    event.preventDefault();
+    var playerName = document.querySelector("input[name='player-name']").value;
+
+    if (!playerName) {
+        alert("Please enter your initials!");
+        return false;
+    }
+
+}
+
+
+
+
 var saveScore = function(name, score) {
-    console.log("Name:", name, "Score", score);
+
 }
 
 var startQuiz = function() {
     startEl.remove();
-    countdownTimer();
+    startTimer();
     getQuestion(currentQuestion);
 };
 
 
 startBtnEl.addEventListener("click", startQuiz);
 quizEl.addEventListener("click", quizButtonHandler);
+formEl.addEventListener("submit", scoreFormHandler);
