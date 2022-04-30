@@ -6,10 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
-    <main class="min-vh-100 d-flex justify-content-around align-items-center" id="quiz-container">
-        <div class="btn btn-outline-dark text-light btn-success" id="start-btn">Start Quiz</div>
+    <header class="d-flex justify-content-between pt-3 mx-3">
+        <a href="#">High Scores</a>
+        <div>Timer Element</div>
+        
+    </header>
+
+    <main id="quiz-container">
+        <div class="vh-100 d-flex row justify-content-center align-items-center" id="start-container">
+            <section class="justify-content-center">
+                <div class=" text-center">
+                    <h1>Coding Quiz Challenge</h1>
+                </div>
+                <div class="">
+                    <p class="text-center">Try to answer the following code-related questions within the time limit. </br> Keep in mind that incorrect answers will penalize your final score by ten seconds!</p>
+                </div>
+                <div class="text-center">
+                    <div class="btn btn-outline-dark text-light btn-success" id="start-btn">Start Quiz</div>
+                </div>
+            </section>
+        </div>
     </main>
 
 
