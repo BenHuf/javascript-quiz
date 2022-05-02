@@ -1,15 +1,15 @@
-var bodyEl = document.querySelector("body")
-var quizEl = document.querySelector("#quiz-container")
-var startEl = document.querySelector("#start-container")
-var startBtnEl = document.querySelector("#start-btn")
-var timerEl = document.querySelector("#timer")
-var footerEl = document.querySelector("footer")
-var formEl = document.createElement("form")
+var bodyEl = document.querySelector("body");
+var quizEl = document.querySelector("#quiz-container");
+var startEl = document.querySelector("#start-container");
+var startBtnEl = document.querySelector("#start-btn");
+var timerEl = document.querySelector("#timer");
+var footerEl = document.querySelector("footer");
+var formEl = document.createElement("form");
 var scoreList = document.createElement("ul");
 var endScreenEl = document.createElement("div");
 var scoresLink = document.querySelector("#scores-link");
 
-var timeLeft = 75;
+var timeLeft = 5;
 var finalScore = 0;
 var currentQuestion = 0;
 
@@ -59,7 +59,6 @@ var questions = [{
 }];
 
 
-
 // Click start buttton to begin quiz
 // STARTQUIZ -- Timer starts ticking down and page populates with first question
 // If timer hits 0 end game
@@ -81,7 +80,7 @@ var countdownTimer = function() {
     }
     else {
         stopTimer();
-        return endQuiz(false);
+        return endQuiz(timeLeft);
     }
 };
 
@@ -184,18 +183,10 @@ var endQuiz = function(num) {
     endScreenEl.className = "end-screen";
     stopTimer();
     quizEl.innerHTML = "";
-
-    if (!num) {
-        endScreenEl.innerHTML = "<div><h1>You ran out of time. Refresh the page to try again.</h1><p>Your final score is: " + num + "</p><p>Enter initials: <input type='text' name='player-name' placeholder='Initials' /><button class='btn btn-outline-dark text-light btn-success name-submit' id='submit-player-name' type='submit'>Submit</button></p></div>";
-        quizEl.appendChild(endScreenEl);
-    }
-
-    else {
-        finalScore += num;
-        endScreenEl.innerHTML = "<div><h1>All Done!</h1><p>Your final score is: " + num + "</p><p>Enter initials: <input type='text' name='player-name' placeholder='Initials' /><button class='btn btn-outline-dark text-light btn-success name-submit' id='submit-player-name' type='submit'>Submit</button></p></div>";
-        formEl.appendChild(endScreenEl);
-        quizEl.appendChild(formEl);
-    }
+    finalScore += num;
+    endScreenEl.innerHTML = "<div><h1>All Done!</h1><p>Your final score is: " + num + "</p><p>Enter initials: <input type='text' name='player-name' placeholder='Initials' /><button class='btn btn-outline-dark text-light btn-success name-submit' id='submit-player-name' type='submit'>Submit</button></p></div>";
+    formEl.appendChild(endScreenEl);
+    quizEl.appendChild(formEl);
 }
 
 // handles score form
