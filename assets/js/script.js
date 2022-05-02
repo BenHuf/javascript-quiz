@@ -1,3 +1,4 @@
+// defined different elements used in functions
 var bodyEl = document.querySelector("body");
 var quizEl = document.querySelector("#quiz-container");
 var startEl = document.querySelector("#start-container");
@@ -9,11 +10,11 @@ var scoreList = document.createElement("ul");
 var endScreenEl = document.createElement("div");
 var scoresLink = document.querySelector("#scores-link");
 
-var timeLeft = 5;
+// initialized variables for later functions
+var timeLeft = 75;
 var finalScore = 0;
 var currentQuestion = 0;
-
-var player = {}
+var player = {};
 var scores = [];
 
 // array of all question elements
@@ -58,17 +59,6 @@ var questions = [{
     ans: "4"
 }];
 
-
-// Click start buttton to begin quiz
-// STARTQUIZ -- Timer starts ticking down and page populates with first question
-// If timer hits 0 end game
-// when an answer is clicked current question removed new question added
-// when all questions answered end quiz
-// ENDQUIZ -- Display final score and ask for name. 
-//    Save final score to local storage and show high score list
-
-
-
 // Timer function -- Displays and decrements timer. Ends quiz if reaches 0
 var countdownTimer = function() {
     if (timeLeft > 0) {
@@ -84,6 +74,7 @@ var countdownTimer = function() {
     }
 };
 
+// timer code for start and stop. defined 't' as setInterval for DRY
 var t;
 
 var startTimer = function() {
@@ -100,41 +91,40 @@ var getQuestion = function(num) {
     quizEl.innerHTML = "";
 
     var questionEl = document.createElement("div");
-        questionEl.className = ("question-container");
+    questionEl.className = ("question-container");
 
-        var questionQnEl = document.createElement("h1");
-        questionQnEl.textContent = questions[num].qn;
-        questionEl.appendChild(questionQnEl);
+    var questionQnEl = document.createElement("h1");
+    questionQnEl.textContent = questions[num].qn;
+    questionEl.appendChild(questionQnEl);
 
-        var questionOpt1El = document.createElement("div")
-        questionOpt1El.className = "btn btn-outline-success answer-choice-btn";
-        questionOpt1El.setAttribute("option", "1");
-        questionOpt1El.textContent = questions[num].opt1;
-        questionEl.appendChild(questionOpt1El);
+    var questionOpt1El = document.createElement("div")
+    questionOpt1El.className = "btn btn-outline-success answer-choice-btn";
+    questionOpt1El.setAttribute("option", "1");
+    questionOpt1El.textContent = questions[num].opt1;
+    questionEl.appendChild(questionOpt1El);
 
-        var questionOpt2El = document.createElement("div")
-        questionOpt2El.className = "btn btn-outline-success answer-choice-btn";
-        questionOpt2El.setAttribute("option", "2");
-        questionOpt2El.textContent = questions[num].opt2;
-        questionEl.appendChild(questionOpt2El);
+    var questionOpt2El = document.createElement("div")
+    questionOpt2El.className = "btn btn-outline-success answer-choice-btn";
+    questionOpt2El.setAttribute("option", "2");
+    questionOpt2El.textContent = questions[num].opt2;
+    questionEl.appendChild(questionOpt2El);
 
-        var questionOpt3El = document.createElement("div")
-        questionOpt3El.className = "btn btn-outline-success answer-choice-btn";
-        questionOpt3El.setAttribute("option", "3"); 
-        questionOpt3El.textContent = questions[num].opt3;
-        questionEl.appendChild(questionOpt3El);
+    var questionOpt3El = document.createElement("div")
+    questionOpt3El.className = "btn btn-outline-success answer-choice-btn";
+    questionOpt3El.setAttribute("option", "3"); 
+    questionOpt3El.textContent = questions[num].opt3;
+    questionEl.appendChild(questionOpt3El);
 
-        var questionOpt4El = document.createElement("div")
-        questionOpt4El.className = "btn btn-outline-success answer-choice-btn";
-        questionOpt4El.setAttribute("option", "4");
-        questionOpt4El.textContent = questions[num].opt4;
-        questionEl.appendChild(questionOpt4El);
+    var questionOpt4El = document.createElement("div")
+    questionOpt4El.className = "btn btn-outline-success answer-choice-btn";
+    questionOpt4El.setAttribute("option", "4");
+    questionOpt4El.textContent = questions[num].opt4;
+    questionEl.appendChild(questionOpt4El);
 
-        quizEl.setAttribute("correct-answer", questions[num].ans);
-        quizEl.appendChild(questionEl);
-
-        console.log("populated question ", num+1);
-        currentQuestion++;
+    quizEl.setAttribute("correct-answer", questions[num].ans);
+    quizEl.appendChild(questionEl);
+    
+    currentQuestion++;
     }
     else {
         return endQuiz(timeLeft);
@@ -154,7 +144,7 @@ var quizButtonHandler = function(event) {
     }
 }
 
-// deletes last correct or wrong footer text on click
+// deletes last 'correct' or 'wrong' footer text on click
 var endClickHandler = function() {
     footerEl.textContent = "";
     return false;
@@ -208,11 +198,12 @@ var scoreFormHandler = function(event) {
 }
 
 
-
+// saves score to local storage
 var saveScore = function() {
     localStorage.setItem("scores", JSON.stringify(scores));
 }
 
+// pulls a stringified array of saved scores from local storage, parces them and saves it as a variable names savedScores
 var loadScores = function() {
     var savedScores = localStorage.getItem("scores");
 
@@ -224,6 +215,7 @@ var loadScores = function() {
     console.log(scores);
 }
 
+// displays all saved scores and gives a button to restart quiz
 var scoreScreen = function() {
     startEl.remove();
     endScreenEl.innerHTML = "";
@@ -246,21 +238,24 @@ var scoreScreen = function() {
     return false;
 }
 
+// function to append a prior score to the score screen
 var addScore = function(scoreObject) {
     var scoreEl = document.createElement("li");
     scoreEl.textContent = scoreObject.name + " - " + scoreObject.score;
     scoreList.appendChild(scoreEl)
 }
 
+// starts the quiz by removing the starting screen elements, starting the timer, and getting the first question.
 var startQuiz = function() {
     startEl.remove();
     startTimer();
     getQuestion(currentQuestion);
 };
 
+// calls the loadScores function on page load
 loadScores();
 
-
+// all event listeners used to trigger functions
 startBtnEl.addEventListener("click", startQuiz);
 quizEl.addEventListener("click", quizButtonHandler);
 formEl.addEventListener("submit", scoreFormHandler);
